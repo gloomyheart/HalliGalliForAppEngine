@@ -42,27 +42,26 @@ public class MainController
 	}
 	
 	@RequestMapping(value="main/{roomNumber}", method=RequestMethod.GET)
-	public String main(@PathVariable("roomNumber")Long roomNumber, Model model)
+	public synchronized String main(@PathVariable("roomNumber")int roomNumber, Model model)
 	{
 		UserService userService = UserServiceFactory.getUserService();
-		if (!userService.isUserLoggedIn())
+		
+		// 로그인 하지 않았거나 방에 꽉찼으면 초기화면으로
+		if (!userService.isUserLoggedIn() || gameService.isFullAtRoom(roomNumber))
 		{
 			model.addAttribute("isLogin", false);
 			model.addAttribute("loginUrl", userService.createLoginURL("/hg/main"));
 			return "index";
 		}
 		
-		// 해당 방에 사람이 꽉찼는지 체크
-		if (gameService.isFullAtRoom(roomNumber))
-		{
-			
-		}
-		
 		// 해당 방번호로 채널생성
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		String token = channelService.createChannel(prefix + roomNumber);
-		model.addAttribute("token", token);
 		
+		// 해당 방에 유저추가
+		gameService.addUser(userService.getCurrentUser(), roomNumber);
+		
+		model.addAttribute("token", token);
 		model.addAttribute("userName", userService.getCurrentUser().getNickname());
 		model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/main"));
 		model.addAttribute("roomNumber", roomNumber);
