@@ -5,12 +5,13 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
-		<servlet-name>HalliGalliGame</servlet-name>
-		<servlet-class>com.mudchobo.game.halligalligame.HalliGalliGameServlet</servlet-class>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>HalliGalliGame</servlet-name>
-		<url-pattern>/halligalligame</url-pattern>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
