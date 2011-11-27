@@ -15,7 +15,7 @@ import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 
 @Controller
-@RequestMapping("/channel")
+@RequestMapping("/test")
 public class TestController 
 {
 	private static final Logger log = Logger.getLogger(TestController.class.getName());

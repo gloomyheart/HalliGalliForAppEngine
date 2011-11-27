@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/channel")
-public class ChannelController {
+public class ChannelController 
+{
 	
 }
