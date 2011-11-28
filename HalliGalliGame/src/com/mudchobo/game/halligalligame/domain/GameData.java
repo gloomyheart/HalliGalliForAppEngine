@@ -159,7 +159,7 @@ public class GameData
 		return true;
 	}
 	
-	public String setReady(User user, Boolean isReady)
+	public void setReady(User user, Boolean isReady)
 	{
 		for (int i =0; i < userList.size(); i++)
 		{
@@ -170,7 +170,6 @@ public class GameData
 				break;
 			}
 		}
-		return "ok";
 	}
 	
 	public int getUserListSize()
@@ -181,6 +180,20 @@ public class GameData
 	public boolean isStart()
 	{
 		return isStart;
+	}
+
+	public List<String> getOpenedCardList() 
+	{
+		int end = 4;
+		if (cardList.size() < 4)
+		{
+			
+		}
+		for (int i = 0; (i < cardList.size()) && (i < 4); i++)
+		{
+			
+		}
+		return null;
 	}
 	
 	

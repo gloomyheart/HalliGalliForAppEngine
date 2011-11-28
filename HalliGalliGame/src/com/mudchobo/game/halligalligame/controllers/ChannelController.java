@@ -2,6 +2,7 @@ package com.mudchobo.game.halligalligame.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +37,7 @@ public class ChannelController
 		User user = userService.getCurrentUser();
 		gameService.setReady(user, isReady, roomNumber);
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("aa", "bb");
-		map.put("cc", "dd");
+		map.put("result", "ok");
 		
 		JSONObject object = new JSONObject(map);
 		System.out.println(object.toString());
@@ -46,8 +46,23 @@ public class ChannelController
 	}
 	
 	@RequestMapping(value="/start", method=RequestMethod.GET)
-	public void start(HttpServletRequest req, HttpServletResponse res) throws IOException
+	public void start(
+			@RequestParam("roomNumber") int roomNumber,
+			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
+		Map<String, String> map = new HashMap<String, String>();
+		UserService userService = UserServiceFactory.getUserService();
+		User user = userService.getCurrentUser();
 		
+		// 게임시작 요청
+		String result = gameService.startGame(user, roomNumber);
+		
+		map.put("result", result);
+		
+		// 게임이 시작되었으면 진행
+		if (result == "start")
+		{
+			List<String> currentCardList = gameService.getCurrentCardList(roomNumber);
+		}
 	}
 }

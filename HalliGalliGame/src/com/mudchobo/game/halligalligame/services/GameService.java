@@ -75,13 +75,25 @@ public class GameService {
 	 * @param user
 	 * @param roomNumber
 	 */
-	public void startGame(User user, int roomNumber)
+	public String startGame(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		if (gameData.isAllReady())
 		{
-			String result = gameData.startGame();
+			return gameData.startGame();
 		}
+		return "false";
+	}
+	
+	
+	/**
+	 * 카드리스트 얻기
+	 * @return
+	 */
+	public List<String> getCurrentCardList(int roomNumber) 
+	{
+		GameData gameData = gameDataList.get(roomNumber);
+		return gameData.getOpenedCardList();
 	}
 	
 	/**
