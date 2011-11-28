@@ -29,7 +29,7 @@ public class GameService {
 	public boolean isFullAtRoom(int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		if (gameData.getUserListSize() <= 4)
+		if (gameData.getUserListSize() >= 4)
 		{
 			return true;
 		}
@@ -37,14 +37,25 @@ public class GameService {
 	}
 	
 	/**
-	 * 유저가 접속 시 유저를 추가시킴
+	 * 유저가 접속 시
 	 * @param user
 	 * @param roomNumber
 	 */
-	public void addUser(User user, int roomNumber)
+	public void connect(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.addUser(user);
+	}
+	
+	/**
+	 * 유저 접속 끊을 시
+	 * @param user
+	 * @param roomNumber
+	 */
+	public void disconnect(User user, int roomNumber)
+	{
+		GameData gameData = gameDataList.get(roomNumber);
+		gameData.removeUser(user);
 	}
 	
 	/**
@@ -57,5 +68,49 @@ public class GameService {
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.setReady(user, isReady);
+	}
+	
+	/**
+	 * 게임 시작
+	 * @param user
+	 * @param roomNumber
+	 */
+	public void startGame(User user, int roomNumber)
+	{
+		GameData gameData = gameDataList.get(roomNumber);
+		if (gameData.isAllReady())
+		{
+			String result = gameData.startGame();
+		}
+	}
+	
+	/**
+	 * 카드 뒤집기
+	 * @param user
+	 * @param roomNumber
+	 */
+	public void openCard(User user, int roomNumber)
+	{
+		
+	}
+	
+	/**
+	 * 종치기
+	 * @param user
+	 * @param roomNumber
+	 */
+	public void ringBell(User user, int roomNumber)
+	{
+		
+	}
+	
+	/**
+	 * 채팅요청
+	 * @param user
+	 * @param roomNumber
+	 */
+	public void chat(User user, int roomNumber)
+	{
+		
 	}
 }

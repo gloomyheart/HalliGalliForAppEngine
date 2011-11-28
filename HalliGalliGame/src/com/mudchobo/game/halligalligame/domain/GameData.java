@@ -30,7 +30,7 @@ public class GameData
 	 * @return start:시작, notPeople:사람이부족한경우 
 	 */
 	public String startGame()
-	{	
+	{
 		// 시작사용자는 0
 		nowPlayer = 0;
 		
@@ -89,6 +89,8 @@ public class GameData
 			}
 			userList.get(i).setCardList(stack);
 		}
+		
+		isStart = true;
 		return "start";
 	}
 
@@ -110,7 +112,7 @@ public class GameData
 			}
 			cardList.push(card);
 		}
-		
+		return "ok";
 	}
 	
 	public void addUser(User user) 
@@ -133,8 +135,28 @@ public class GameData
 				break;
 			}
 		}
-		// 게임중이면 게임중단
-		stopGame();
+		if (isStart)
+		{
+			// 게임중이면 게임중단
+			stopGame();
+		}
+	}
+	
+	public boolean isAllReady()
+	{
+		if (userList.size() <= 1)
+		{
+			return false;
+		}
+		for (int i = 1; i < userList.size(); i++)
+		{
+			HGUser hgUser = userList.get(i);
+			if (!hgUser.getIsReady())
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public String setReady(User user, Boolean isReady)
@@ -148,19 +170,7 @@ public class GameData
 				break;
 			}
 		}
-		
-		// 전부다 레디했는지 확인
-		for (int i = 0; i < userList.size(); i++)
-		{
-			HGUser hgUser = userList.get(i);
-			if (!hgUser.getIsReady())
-			{
-				return "false";
-			}
-		}
-		
-		// 게임시작
-		return startGame();
+		return "ok";
 	}
 	
 	public int getUserListSize()
@@ -172,4 +182,6 @@ public class GameData
 	{
 		return isStart;
 	}
+	
+	
 }

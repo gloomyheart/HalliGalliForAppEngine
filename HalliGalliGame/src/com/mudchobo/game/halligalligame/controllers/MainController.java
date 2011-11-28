@@ -29,13 +29,13 @@ public class MainController
 		if (!userService.isUserLoggedIn()) 
 		{
 			model.addAttribute("isLogin", false);
-			model.addAttribute("loginUrl", userService.createLoginURL("/hg/main"));
+			model.addAttribute("loginUrl", userService.createLoginURL("/hg/index"));
 		}
 		else
 		{
 			model.addAttribute("isLogin", true);
 			model.addAttribute("userName", userService.getCurrentUser().getNickname());
-			model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/main"));
+			model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/index"));
 		}
 		return "index";
 	}
@@ -58,7 +58,7 @@ public class MainController
 		String token = channelService.createChannel(prefix + roomNumber);
 		
 		// 해당 방에 유저추가
-		gameService.addUser(userService.getCurrentUser(), roomNumber);
+		gameService.connect(userService.getCurrentUser(), roomNumber);
 		
 		model.addAttribute("token", token);
 		model.addAttribute("userName", userService.getCurrentUser().getNickname());
