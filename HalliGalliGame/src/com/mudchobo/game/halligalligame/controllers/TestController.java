@@ -2,7 +2,6 @@ package com.mudchobo.game.halligalligame.controllers;
 
 import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

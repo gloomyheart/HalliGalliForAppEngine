@@ -21,27 +21,38 @@ public class GameService {
 		}
 	}
 	
-	public void initGameData(int roomNumber)
-	{
-		
-	}
-	
+	/**
+	 * 방에 4명이 다 찼는지 확인. 다 찼다면 입장못하게 하기 위함.
+	 * @param roomNumber
+	 * @return
+	 */
 	public boolean isFullAtRoom(int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		if (gameData.getUserList().size() <= 4)
+		if (gameData.getUserListSize() <= 4)
 		{
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * 유저가 접속 시 유저를 추가시킴
+	 * @param user
+	 * @param roomNumber
+	 */
 	public void addUser(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.addUser(user);
 	}
 	
+	/**
+	 * 유저가 레디요청 시 레디시킴
+	 * @param user
+	 * @param isReady
+	 * @param roomNumber
+	 */
 	public void setReady(User user, Boolean isReady, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
