@@ -1,5 +1,11 @@
 /** 공용 js함수 **/
 
+// 최초연결 시
+function connectRoom(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("post", "/hg/channel/connect?roomNumber=" + roomNumber);
+	xhr.send();
+}
 // 채팅 메세지 보내기
 function sendChat(msg){
 	var xhr = new XMLHttpRequest();
@@ -19,5 +25,4 @@ function sendStart(){
 	var xhr = new XMLHttpRequest();
 	xhr.open("post", "/hg/channel/start?roomNumber=" + roomNumber);
 	xhr.send();
-}
-
+} 

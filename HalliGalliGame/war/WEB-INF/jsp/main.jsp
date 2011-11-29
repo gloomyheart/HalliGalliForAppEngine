@@ -19,7 +19,7 @@
 				channel = new goog.appengine.Channel("${token}");
 				socket = channel.open();
 				socket.onopen = function(){
-					
+					connectRoom();
 				};
 				socket.onmessage = function(m){
 					console.log(m.data);

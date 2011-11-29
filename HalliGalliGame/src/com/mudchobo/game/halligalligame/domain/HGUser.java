@@ -7,6 +7,7 @@ import com.google.appengine.api.users.User;
 
 public class HGUser {
 
+	private int roomNumber;
 	private User user;
 	private Boolean isReady;
 	private Stack<String> cardList;
@@ -28,6 +29,12 @@ public class HGUser {
 		return card;
 	}
 	
+	public int getRoomNumber() {
+		return roomNumber;
+	}
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
+	}
 	public User getUser() {
 		return user;
 	}

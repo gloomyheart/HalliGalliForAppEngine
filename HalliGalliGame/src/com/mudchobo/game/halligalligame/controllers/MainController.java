@@ -1,6 +1,11 @@
 package com.mudchobo.game.halligalligame.controllers;
 
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.google.appengine.api.channel.ChannelPresence;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.users.UserService;
@@ -42,7 +48,10 @@ public class MainController
 	}
 	
 	@RequestMapping(value="main/{roomNumber}", method=RequestMethod.GET)
-	public synchronized String main(@PathVariable("roomNumber")int roomNumber, Model model)
+	public synchronized String main(
+			@PathVariable("roomNumber")int roomNumber, 
+			Model model,
+			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		UserService userService = UserServiceFactory.getUserService();
 		
@@ -50,7 +59,7 @@ public class MainController
 		if (!userService.isUserLoggedIn() || gameService.isFullAtRoom(roomNumber))
 		{
 			model.addAttribute("isLogin", false);
-			model.addAttribute("loginUrl", userService.createLoginURL("/hg/main"));
+			model.addAttribute("loginUrl", userService.createLoginURL("/hg/index"));
 			return "index";
 		}
 		
@@ -58,12 +67,9 @@ public class MainController
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		String token = channelService.createChannel(prefix + roomNumber + userService.getCurrentUser().getUserId());
 		
-		// 해당 방에 유저추가
-		gameService.connect(userService.getCurrentUser(), roomNumber);
-		
 		model.addAttribute("token", token);
 		model.addAttribute("userName", userService.getCurrentUser().getNickname());
-		model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/main"));
+		model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/main/" + roomNumber));
 		model.addAttribute("roomNumber", roomNumber);
 		
 		return "main";

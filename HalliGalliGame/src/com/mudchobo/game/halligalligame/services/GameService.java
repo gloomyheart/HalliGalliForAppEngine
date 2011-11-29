@@ -1,19 +1,25 @@
 package com.mudchobo.game.halligalligame.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.google.appengine.api.users.User;
 import com.mudchobo.game.halligalligame.domain.GameData;
+import com.mudchobo.game.halligalligame.domain.HGUser;
 
 @Service
 public class GameService {
 	
 	private List<GameData> gameDataList;
+	private Map<String, HGUser> userList;
+	
 	public GameService() 
 	{
+		userList = new HashMap<String, HGUser>();
 		gameDataList = new ArrayList<GameData>();
 		for (int i = 0; i < 200; i++)
 		{
@@ -37,18 +43,18 @@ public class GameService {
 	}
 	
 	/**
-	 * 유저가 접속 시
+	 * 유저가 해당방에 접속 시
 	 * @param user
 	 * @param roomNumber
 	 */
-	public void connect(User user, int roomNumber)
+	public void connect(User user, int roomNumber, String clientId)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.addUser(user);
 	}
 	
 	/**
-	 * 유저 접속 끊을 시
+	 * 유저가 접속 끊을 시
 	 * @param user
 	 * @param roomNumber
 	 */
@@ -126,5 +132,24 @@ public class GameService {
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.chat(user, msg);
+	}
+
+	public boolean connectClient(String clientId, User user) 
+	{
+		if (userList.get(clientId) != null)
+		{
+			return false;
+		}
+		HGUser hgUser = new HGUser();
+		hgUser.setUser(user);
+		userList.put(clientId, hgUser);
+		return false;
+	}
+
+	public void disconnectClient(String clientId) 
+	{
+		HGUser hgUser = userList.get(clientId);
+		int roomNumber = hgUser.getRoomNumber();
+		disconnect(hgUser.getUser(), roomNumber);
 	}
 }

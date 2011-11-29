@@ -125,6 +125,9 @@ public class GameData
 		HGUser hgUser = new HGUser();
 		hgUser.setUser(user);
 		userList.add(hgUser);
+		
+		// TODO 유저목록보내기
+		sendToAll("유저가 접속 시");
 	}
 
 	public void removeUser(User user)
@@ -143,6 +146,8 @@ public class GameData
 			// 게임중이면 게임중단
 			stopGame();
 		}
+		// TODO 유저목록 보내기
+		sendToAll("유저가 누구누구남았다 전송");
 	}
 	
 	public boolean isAllReady()
