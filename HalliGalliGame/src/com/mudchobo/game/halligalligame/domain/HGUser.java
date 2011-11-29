@@ -3,10 +3,11 @@ package com.mudchobo.game.halligalligame.domain;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import com.google.appengine.api.users.User;
+
 public class HGUser {
-	private String userId;
-	private String nickName;
-	private String email;
+
+	private User user;
 	private Boolean isReady;
 	private Stack<String> cardList;
 	private Boolean isDead;
@@ -27,23 +28,11 @@ public class HGUser {
 		return card;
 	}
 	
-	public String getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	public String getNickName() {
-		return nickName;
-	}
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public Boolean getIsReady() {
 		return isReady;

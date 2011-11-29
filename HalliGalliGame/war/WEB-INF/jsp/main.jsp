@@ -12,6 +12,7 @@
 		<script type="text/javascript">
 			var channel;
 			var socket;
+			var roomNumber = "${roomNumber}";
 			
 			$(document).ready(function(){
 				// 채널소켓
@@ -21,7 +22,7 @@
 					
 				};
 				socket.onmessage = function(m){
-					
+					console.log(m.data);
 				};
 				socket.onError = function(){
 					alert("error!");
@@ -42,15 +43,23 @@
 				$("#btnOpenCard").click(function(){
 					
 				});
-				$("#btnRing").click(function){
+				$("#btnRing").click(function(){
 					
 				});
 				$("#btnChat").click(function(){
-					
+					var val = $("#inputChat").val();
+					if (val == ""){
+						return;
+					}
+					sendChat(val);
 				});
 				$("#inputChat").keyup(function(e){
 					if (e.keyCode == 13){
-						// TODO
+						var val = $(this).val();
+						if (val == ""){
+							return;
+						}
+						sendChat(val);
 					}
 				});
 			});

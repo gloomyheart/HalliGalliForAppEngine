@@ -6,21 +6,26 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.channel.ChannelMessage;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.users.User;
 import com.mudchobo.game.halligalligame.controllers.TestController;
 
 public class GameData 
 {
+	private String prefix = "Channel";
 	private static final Logger log = Logger.getLogger(TestController.class.getName());
-	
+
+	private int roomNumber = 0;
 	private String[] cardPrefixArray = {"B", "L", "P", "S"};
 	private List<HGUser> userList;
 	private Stack<String> cardList;
 	private int nowPlayer = 0;
 	private boolean isStart = false;
-	
-	public GameData() 
+	public GameData(int roomNumber) 
 	{
+		this.roomNumber = roomNumber;
 		userList = new ArrayList<HGUser>();
 		cardList = new Stack<String>();
 	}
@@ -103,7 +108,7 @@ public class GameData
 	public String flipCard(User user)
 	{
 		HGUser hgUser = userList.get(nowPlayer);
-		if (hgUser.getUserId() == user.getUserId())
+		if (hgUser.getUser().getUserId() == user.getUserId())
 		{
 			String card = hgUser.flipCard();
 			if (card == "")
@@ -118,9 +123,7 @@ public class GameData
 	public void addUser(User user) 
 	{
 		HGUser hgUser = new HGUser();
-		hgUser.setNickName(user.getEmail());
-		hgUser.setNickName(user.getNickname());
-		hgUser.setUserId(user.getUserId());
+		hgUser.setUser(user);
 		userList.add(hgUser);
 	}
 
@@ -129,7 +132,7 @@ public class GameData
 		for (int i = 0; i < userList.size(); i++)
 		{
 			HGUser hgUser = userList.get(i);
-			if (user.getUserId() == hgUser.getUserId())
+			if (user.getUserId() == hgUser.getUser().getUserId())
 			{
 				userList.remove(i);
 				break;
@@ -164,7 +167,7 @@ public class GameData
 		for (int i =0; i < userList.size(); i++)
 		{
 			HGUser hgUser = userList.get(i);
-			if (user.getUserId() == hgUser.getUserId())
+			if (user.getUserId() == hgUser.getUser().getUserId())
 			{
 				hgUser.setIsReady(isReady);
 				break;
@@ -195,6 +198,37 @@ public class GameData
 		}
 		return null;
 	}
+
+	public void sendToAll(String msg)
+	{
+		for (int i = 0; i < userList.size(); i++)
+		{
+			User user = userList.get(i).getUser();
+			sendMessage(user, msg);
+		}
+	}
 	
+	public void sendWithoutMe(HGUser hgUser, String msg)
+	{
+		for (int i = 0; i < userList.size(); i++)
+		{
+			User user = userList.get(i).getUser();
+			if (user.getUserId() == hgUser.getUser().getUserId())
+			{
+				continue;
+			}
+			sendMessage(user, msg);
+		}
+	}
 	
+	public void sendMessage(User user, String msg)
+	{
+		ChannelService channelService = ChannelServiceFactory.getChannelService();
+		channelService.sendMessage(new ChannelMessage(prefix + roomNumber + user.getUserId(), msg));
+	}
+	
+	public void chat(User user, String msg) 
+	{
+		sendToAll(msg);
+	}
 }

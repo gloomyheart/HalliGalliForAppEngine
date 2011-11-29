@@ -17,7 +17,7 @@ public class GameService {
 		gameDataList = new ArrayList<GameData>();
 		for (int i = 0; i < 200; i++)
 		{
-			gameDataList.add(new GameData());
+			gameDataList.add(new GameData(i));
 		}
 	}
 	
@@ -120,9 +120,11 @@ public class GameService {
 	 * 채팅요청
 	 * @param user
 	 * @param roomNumber
+	 * @param msg 
 	 */
-	public void chat(User user, int roomNumber)
+	public void chat(User user, int roomNumber, String msg)
 	{
-		
+		GameData gameData = gameDataList.get(roomNumber);
+		gameData.chat(user, msg);
 	}
 }

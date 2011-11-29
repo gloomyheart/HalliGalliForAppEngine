@@ -27,14 +27,13 @@ public class ChannelController
 	@Autowired
 	private GameService gameService;
 	
-	@RequestMapping(value="/ready", method=RequestMethod.GET)
+	@RequestMapping(value="/ready", method=RequestMethod.POST)
 	public void setReady(
 			@RequestParam("isReady") boolean isReady,
 			@RequestParam("roomNumber") int roomNumber,
 			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
-		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
+		User user = getUser();
 		gameService.setReady(user, isReady, roomNumber);
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("result", "ok");
@@ -45,14 +44,13 @@ public class ChannelController
 		res.getWriter().print(object.toString());
 	}
 	
-	@RequestMapping(value="/start", method=RequestMethod.GET)
+	@RequestMapping(value="/start", method=RequestMethod.POST)
 	public void start(
 			@RequestParam("roomNumber") int roomNumber,
 			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		Map<String, String> map = new HashMap<String, String>();
-		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
+		User user = getUser();
 		
 		// 게임시작 요청
 		String result = gameService.startGame(user, roomNumber);
@@ -65,4 +63,23 @@ public class ChannelController
 			List<String> currentCardList = gameService.getCurrentCardList(roomNumber);
 		}
 	}
+	
+	@RequestMapping(value="/chat", method=RequestMethod.POST)
+	public void chat(
+			@RequestParam("roomNumber") int roomNumber,
+			@RequestParam("msg") String msg,
+			HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
+		User user = getUser();
+		gameService.chat(user, roomNumber, msg);
+		
+		
+	}
+	
+	private User getUser()
+	{
+		UserService userService = UserServiceFactory.getUserService();
+		return userService.getCurrentUser();
+	}
 }
+

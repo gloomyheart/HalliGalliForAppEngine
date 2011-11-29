@@ -1,5 +1,6 @@
 package com.mudchobo.game.halligalligame.controllers;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,9 +54,9 @@ public class MainController
 			return "index";
 		}
 		
-		// 해당 방번호로 채널생성
+		// 해당 방번호와 유저아이디조합으로 채널생성
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
-		String token = channelService.createChannel(prefix + roomNumber);
+		String token = channelService.createChannel(prefix + roomNumber + userService.getCurrentUser().getUserId());
 		
 		// 해당 방에 유저추가
 		gameService.connect(userService.getCurrentUser(), roomNumber);
