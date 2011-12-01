@@ -19,11 +19,11 @@
 				channel = new goog.appengine.Channel("${token}");
 				socket = channel.open();
 				socket.onopen = function(){
-					$(".divResult ul").append("<li>open!</li>");
+					$(".divResult ul").prepend("<li>open!</li>");
 					connectRoom();
 				};
 				socket.onmessage = function(m){
-					$(".divResult ul").append("<li>" + m.data + "</li>");
+					$(".divResult ul").prepend("<li>" + m.data + "</li>");
 					console.log(m.data);
 				};
 				socket.onError = function(){

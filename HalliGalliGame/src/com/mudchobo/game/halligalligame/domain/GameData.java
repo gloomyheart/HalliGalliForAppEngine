@@ -1,7 +1,9 @@
 package com.mudchobo.game.halligalligame.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Logger;
@@ -10,6 +12,9 @@ import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.users.User;
+import com.google.appengine.repackaged.org.json.JSONArray;
+import com.google.appengine.repackaged.org.json.JSONException;
+import com.google.appengine.repackaged.org.json.JSONObject;
 import com.mudchobo.game.halligalligame.controllers.TestController;
 
 public class GameData 
@@ -126,8 +131,8 @@ public class GameData
 		hgUser.setUser(user);
 		userList.add(hgUser);
 		
-		// TODO 유저목록보내기
-		sendToAll("유저가 접속 시");
+		// 유저목록 보내기
+		sendUserList();
 	}
 
 	public void removeUser(User user)
@@ -146,8 +151,9 @@ public class GameData
 			// 게임중이면 게임중단
 			stopGame();
 		}
-		// TODO 유저목록 보내기
-		sendToAll("유저가 누구누구남았다 전송");
+		
+		// 유저목록 보내기
+		sendUserList();
 	}
 	
 	public boolean isAllReady()
@@ -204,6 +210,39 @@ public class GameData
 		return null;
 	}
 
+	/**
+	 * 유저목록 보내기
+	 */
+	public void sendUserList()
+	{
+		// 유저목록보내기
+		JSONArray jsonArray = new JSONArray();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			Map<String, Object> map = new HashMap<String, Object>();
+			boolean isKing = false;
+			if (i == 0){
+				isKing = true;
+			}
+			HGUser hgUser = userList.get(i);
+			map.put("isKing", isKing);
+			map.put("isReady", hgUser.getIsReady());
+			map.put("userName", hgUser.getUser().getNickname());
+			jsonArray.put(map);
+		}
+		JSONObject jsonObject = new JSONObject();
+		try 
+		{
+			jsonObject.put("result", "userList");
+			jsonObject.put("data", jsonArray);
+		}
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+		sendToAll(jsonObject.toString());
+	}
+	
 	public void sendToAll(String msg)
 	{
 		for (int i = 0; i < userList.size(); i++)
