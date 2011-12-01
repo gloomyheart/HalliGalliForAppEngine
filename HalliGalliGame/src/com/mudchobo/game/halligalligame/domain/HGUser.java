@@ -12,7 +12,8 @@ public class HGUser {
 	private Boolean isReady;
 	private Stack<String> cardList;
 	private Boolean isDead;
-
+	private String clientId;
+	
 	public int countCard(){
 		return cardList.size();
 	}
@@ -59,5 +60,10 @@ public class HGUser {
 	public void setIsDead(Boolean isDead) {
 		this.isDead = isDead;
 	}
-	
+	public String getClientId() {
+		return clientId;
+	}
+	public void setClientId(String channelId) {
+		this.clientId = channelId;
+	}
 }

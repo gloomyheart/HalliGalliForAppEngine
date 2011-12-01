@@ -1,11 +1,11 @@
 package com.mudchobo.game.halligalligame.controllers;
 
 
-import java.io.IOException; 
+import java.io.IOException;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,10 +66,6 @@ public class MainController
 		// 해당 방번호와 유저아이디조합으로 채널생성
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		String token = channelService.createChannel(prefix + roomNumber + userService.getCurrentUser().getUserId());
-		
-		// 방번호 쿠키생성
-		Cookie cookie = new Cookie("roomNumber", String.valueOf(roomNumber));
-		res.addCookie(cookie);
 		
 		model.addAttribute("token", token);
 		model.addAttribute("userName", userService.getCurrentUser().getNickname());

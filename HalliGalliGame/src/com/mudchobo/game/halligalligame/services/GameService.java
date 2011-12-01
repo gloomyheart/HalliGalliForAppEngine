@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.springframework.stereotype.Service;
 
 import com.google.appengine.api.users.User;
 import com.mudchobo.game.halligalligame.domain.GameData;
 import com.mudchobo.game.halligalligame.domain.HGUser;
 
+/**
+ * @author mudchobo
+ *
+ */
 @Service
 public class GameService {
 	
@@ -20,12 +25,18 @@ public class GameService {
 	private List<GameData> gameDataList;
 	
 	/**
-	 * 현재 사용자 접속 목록 
+	 * 현재 연결된 클라이언트 목록
 	 */
-	private Map<String, HGUser> userList;
+	Map<String, String> clientList;
+	
+	/**
+	 * 접속된 유저목록
+	 */
+	Map<String, HGUser> userList;
 	
 	public GameService() 
 	{
+		clientList = new HashMap<String, String>();
 		userList = new HashMap<String, HGUser>();
 		gameDataList = new ArrayList<GameData>();
 		for (int i = 0; i < 200; i++)
@@ -54,23 +65,41 @@ public class GameService {
 	 * @param user
 	 * @param roomNumber
 	 */
-	public boolean connect(User user, int roomNumber, String clientId)
+	public boolean connect(String clientId)
 	{
-		HGUser hgUser = userList.get(clientId);
-		if (hgUser == null)
+		HGUser hgUser = (HGUser) userList.get(clientId);
+		if (hgUser != null)
 		{
 			return false;
 		}
 		// 사용자접속 목록에 추가
 		hgUser = new HGUser();
-		hgUser.setUser(user);
-		hgUser.setRoomNumber(roomNumber);
+		hgUser.setClientId(clientId);
 		userList.put(clientId, hgUser);
+		
+		return true;
+	}
+	
+	/**
+	 * channel연결 후 방입장 요청 시
+	 * @param roomNumber
+	 * @param user
+	 * @param clientId
+	 * @return
+	 */
+	public boolean enterRoom(int roomNumber, User user, String clientId)
+	{
+		HGUser hgUser = (HGUser) userList.get(clientId);
+		if (hgUser == null)
+		{
+			return false;
+		}
+		hgUser.setRoomNumber(roomNumber);
+		hgUser.setUser(user);
 		
 		// 해당방번호에 유저추가
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.addUser(user);
-		
 		return true;
 	}
 	
@@ -82,7 +111,7 @@ public class GameService {
 	public void disconnect(String clientId)
 	{
 		// 사용자접속 목록에서 삭제
-		HGUser hgUser = userList.get(clientId);
+		HGUser hgUser = (HGUser) userList.get(clientId);
 		int roomNumber = hgUser.getRoomNumber();
 		User user = hgUser.getUser();
 		

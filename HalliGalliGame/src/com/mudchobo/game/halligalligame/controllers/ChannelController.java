@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.appengine.api.channel.ChannelPresence;
-import com.google.appengine.api.channel.ChannelService;
-import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -37,7 +34,9 @@ public class ChannelController
 	{
 		User user = getUser();
 		
-		// TODO 해당 방에 유저추가
+		String clientId = "Channel" + roomNumber + user.getUserId();
+		// 해당 방에 유저추가
+		gameService.enterRoom(roomNumber, user, clientId);
 	}
 	
 	@RequestMapping(value="/ready", method=RequestMethod.POST)

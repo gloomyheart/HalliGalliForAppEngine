@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,22 +29,11 @@ public class ConntectionController
 	@RequestMapping(value="/_ah/channel/connected", method=RequestMethod.POST)
 	public void connected(HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
-		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
-		System.out.println("connected");
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		ChannelPresence channelPresence = channelService.parsePresence(req);
 		System.out.println(channelPresence.clientId());
-		Cookie[] cookies = req.getCookies();
-		int roomNumber = 0;
-		for (int i = 0; i < cookies.length; i++)
-		{
-			Cookie cookie = cookies[i];
-			if (cookie.getName().equals("roomNumber")){
-				roomNumber = Integer.getInteger(cookie.getValue());
-			}
-		}
-		boolean isConnect = gameService.connect(user, roomNumber, channelPresence.clientId());
+		
+		boolean isConnect = gameService.connect(channelPresence.clientId());
 		if (!isConnect)
 		{
 			// TODO 에러처리
