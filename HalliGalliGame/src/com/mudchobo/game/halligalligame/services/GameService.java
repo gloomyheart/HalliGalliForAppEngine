@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.springframework.stereotype.Service;
 
 import com.google.appengine.api.users.User;
@@ -137,14 +136,10 @@ public class GameService {
 	 * @param user
 	 * @param roomNumber
 	 */
-	public String startGame(User user, int roomNumber)
+	public void startGame(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		if (gameData.isAllReady())
-		{
-			return gameData.startGame();
-		}
-		return "false";
+		gameData.startGame();
 	}
 	
 	

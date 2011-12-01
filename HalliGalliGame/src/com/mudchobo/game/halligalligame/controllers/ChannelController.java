@@ -47,13 +47,6 @@ public class ChannelController
 	{
 		User user = getUser();
 		gameService.setReady(user, isReady, roomNumber);
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("result", "ok");
-		
-		JSONObject object = new JSONObject(map);
-		System.out.println(object.toString());
-		res.addHeader("Content-Type", "application/json");
-		res.getWriter().print(object.toString());
 	}
 	
 	@RequestMapping(value="/start", method=RequestMethod.POST)
@@ -61,19 +54,9 @@ public class ChannelController
 			@RequestParam("roomNumber") int roomNumber,
 			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
-		Map<String, String> map = new HashMap<String, String>();
 		User user = getUser();
-		
 		// 게임시작 요청
-		String result = gameService.startGame(user, roomNumber);
-		
-		map.put("result", result);
-		
-		// 게임이 시작되었으면 진행
-		if (result == "start")
-		{
-			List<String> currentCardList = gameService.getCurrentCardList(roomNumber);
-		}
+		gameService.startGame(user, roomNumber);
 	}
 	
 	@RequestMapping(value="/chat", method=RequestMethod.POST)

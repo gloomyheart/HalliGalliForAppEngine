@@ -1,5 +1,40 @@
 /** 공용 js함수 **/
 
+var isKing = false;
+var isReady = false;
+var number = 0;
+
+function(){
+	$(".divResult ul").prepend("<li>open!</li>");
+	connectRoom();
+};
+
+function onMessage(m){
+	var m = eval(m);
+	if (m.data.result == "chat"){
+		$(".divResult").prepend(m.msg);
+	}
+	else if (m.data.result == "userList"){
+		$(".divResult").prepend(m.userList);
+		// TODO 접속현황 그리기
+		for (var i=0; i<m.userList.length; i++){
+			if (m.userList[i].userId == userId && i == 0){
+				isKing = true;
+			} else {
+				isKing = false;
+			}
+			// TODO 그리기
+		}
+		
+		if (isKing){
+			$("#btnStart").show();
+			$("#btnReady").hide();
+		} else{
+			$("#btnStart").hide();
+			$("#btnReady").show();
+		}
+	}
+}
 // 최초연결 시
 function connectRoom(){
 	var xhr = new XMLHttpRequest();

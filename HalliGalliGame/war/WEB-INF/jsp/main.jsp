@@ -13,19 +13,15 @@
 			var channel;
 			var socket;
 			var roomNumber = "${roomNumber}";
+			var nickName = "${nickName}";
+			var userId = "${userId}";
 			
 			$(document).ready(function(){
 				// 채널소켓
 				channel = new goog.appengine.Channel("${token}");
 				socket = channel.open();
-				socket.onopen = function(){
-					$(".divResult ul").prepend("<li>open!</li>");
-					connectRoom();
-				};
-				socket.onmessage = function(m){
-					$(".divResult ul").prepend("<li>" + m.data + "</li>");
-					console.log(m.data);
-				};
+				socket.onopen = onOpen;
+				socket.onmessage = onMessage;
 				socket.onError = function(){
 					alert("error!");
 					location.href = "/hg/index";
@@ -37,10 +33,14 @@
 				
 				// 버튼이벤트
 				$("#btnReady").click(function(){
-					
+					var requestValue = true;
+					if (isReady){
+						requestValue = false;
+					}
+					sendReady(requestValue);
 				});
 				$("#btnStart").click(function(){
-					
+					sendStart();
 				});
 				$("#btnOpenCard").click(function(){
 					

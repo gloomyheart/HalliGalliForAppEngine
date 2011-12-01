@@ -39,8 +39,25 @@ public class GameData
 	 * 게임 시작
 	 * @return start:시작, notPeople:사람이부족한경우 
 	 */
-	public String startGame()
+	public void startGame()
 	{
+		// 모두다 레디했는지 확인
+		if (!isAllReady())
+		{
+			// 모두 레디하지 않음.
+			JSONObject jsonObject = new JSONObject();
+			try 
+			{
+				jsonObject.put("result", "error");
+				jsonObject.put("msg", "모두 준비를 하지 않았습니다.");
+			} 
+			catch (JSONException e) 
+			{
+				e.printStackTrace();
+			}
+			sendToAll(jsonObject.toString());
+			return;
+		}
 		// 시작사용자는 0
 		nowPlayer = 0;
 		
@@ -84,11 +101,6 @@ public class GameData
 		}
 		
 		int userListSize = getUserListSize();
-		if (userListSize > 2)
-		{
-			return "notPeople";
-		}
-		
 		// 클라이언트에게 카드나눠주기
 		for (int i = 0; i < userListSize; i++)
 		{
@@ -99,9 +111,18 @@ public class GameData
 			}
 			userList.get(i).setCardList(stack);
 		}
-		
 		isStart = true;
-		return "start";
+		
+		JSONObject jsonObject = new JSONObject();
+		try 
+		{
+			jsonObject.put("result", "start");
+		} 
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+		sendToAll(jsonObject.toString());
 	}
 
 	public void stopGame()
@@ -227,7 +248,8 @@ public class GameData
 			HGUser hgUser = userList.get(i);
 			map.put("isKing", isKing);
 			map.put("isReady", hgUser.getIsReady());
-			map.put("userName", hgUser.getUser().getNickname());
+			map.put("nickName", hgUser.getUser().getNickname());
+			map.put("userId", hgUser.getUser().getUserId());
 			jsonArray.put(map);
 		}
 		JSONObject jsonObject = new JSONObject();
@@ -242,6 +264,28 @@ public class GameData
 		}
 		sendToAll(jsonObject.toString());
 	}
+
+	/**
+	 * 채팅메세지 전송
+	 * @param user
+	 * @param msg
+	 */
+	public void chat(User user, String msg) 
+	{
+		JSONObject jsonObject = new JSONObject();
+		try 
+		{
+			jsonObject.put("result", "chat");
+			jsonObject.put("msg", msg);
+		}
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+		sendToAll(jsonObject.toString());
+	}
+	
+	
 	
 	public void sendToAll(String msg)
 	{
@@ -269,10 +313,5 @@ public class GameData
 	{
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		channelService.sendMessage(new ChannelMessage(prefix + roomNumber + user.getUserId(), msg));
-	}
-	
-	public void chat(User user, String msg) 
-	{
-		sendToAll(msg);
 	}
 }

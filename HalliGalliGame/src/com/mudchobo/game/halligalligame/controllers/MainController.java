@@ -68,7 +68,8 @@ public class MainController
 		String token = channelService.createChannel(prefix + roomNumber + userService.getCurrentUser().getUserId());
 		
 		model.addAttribute("token", token);
-		model.addAttribute("userName", userService.getCurrentUser().getNickname());
+		model.addAttribute("userId", userService.getCurrentUser().getUserId());
+		model.addAttribute("nickName", userService.getCurrentUser().getNickname());
 		model.addAttribute("logoutUrl", userService.createLogoutURL("/hg/main/" + roomNumber));
 		model.addAttribute("roomNumber", roomNumber);
 		
