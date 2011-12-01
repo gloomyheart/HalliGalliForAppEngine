@@ -14,7 +14,14 @@ import com.mudchobo.game.halligalligame.domain.HGUser;
 @Service
 public class GameService {
 	
+	/**
+	 * 게임데이터 목록
+	 */
 	private List<GameData> gameDataList;
+	
+	/**
+	 * 현재 사용자 접속 목록 
+	 */
 	private Map<String, HGUser> userList;
 	
 	public GameService() 
@@ -47,10 +54,24 @@ public class GameService {
 	 * @param user
 	 * @param roomNumber
 	 */
-	public void connect(User user, int roomNumber, String clientId)
+	public boolean connect(User user, int roomNumber, String clientId)
 	{
+		HGUser hgUser = userList.get(clientId);
+		if (hgUser == null)
+		{
+			return false;
+		}
+		// 사용자접속 목록에 추가
+		hgUser = new HGUser();
+		hgUser.setUser(user);
+		hgUser.setRoomNumber(roomNumber);
+		userList.put(clientId, hgUser);
+		
+		// 해당방번호에 유저추가
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.addUser(user);
+		
+		return true;
 	}
 	
 	/**
@@ -58,8 +79,14 @@ public class GameService {
 	 * @param user
 	 * @param roomNumber
 	 */
-	public void disconnect(User user, int roomNumber)
+	public void disconnect(String clientId)
 	{
+		// 사용자접속 목록에서 삭제
+		HGUser hgUser = userList.get(clientId);
+		int roomNumber = hgUser.getRoomNumber();
+		User user = hgUser.getUser();
+		
+		// 해당방에 유저삭제
 		GameData gameData = gameDataList.get(roomNumber);
 		gameData.removeUser(user);
 	}
@@ -134,22 +161,4 @@ public class GameService {
 		gameData.chat(user, msg);
 	}
 
-	public boolean connectClient(String clientId, User user) 
-	{
-		if (userList.get(clientId) != null)
-		{
-			return false;
-		}
-		HGUser hgUser = new HGUser();
-		hgUser.setUser(user);
-		userList.put(clientId, hgUser);
-		return false;
-	}
-
-	public void disconnectClient(String clientId) 
-	{
-		HGUser hgUser = userList.get(clientId);
-		int roomNumber = hgUser.getRoomNumber();
-		disconnect(hgUser.getUser(), roomNumber);
-	}
 }

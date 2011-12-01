@@ -23,6 +23,7 @@
 				};
 				socket.onmessage = function(m){
 					console.log(m.data);
+					$("#divResult ul").append("<li>" + m.data + "</li>");
 				};
 				socket.onError = function(){
 					alert("error!");
@@ -72,6 +73,6 @@
 		<input type="button" id="btnRing" value="벨"/>
 		<input type="text" id="inputChat" />
 		<input type="button" id="btnChat" value="보내기"/>
-		내용 : <div class="divResult"></div>
+		내용 : <div class="divResult"><ul></ul></div>
     </body>
 </html>

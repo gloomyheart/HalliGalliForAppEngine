@@ -2,6 +2,7 @@ package com.mudchobo.game.halligalligame.controllers;
 
 import java.io.IOException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +34,16 @@ public class ConntectionController
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		ChannelPresence channelPresence = channelService.parsePresence(req);
 		System.out.println(channelPresence.clientId());
-		boolean isConnect = gameService.connectClient(channelPresence.clientId(), user);
+		Cookie[] cookies = req.getCookies();
+		int roomNumber = 0;
+		for (int i = 0; i < cookies.length; i++)
+		{
+			Cookie cookie = cookies[i];
+			if (cookie.getName().equals("roomNumber")){
+				roomNumber = Integer.getInteger(cookie.getValue());
+			}
+		}
+		boolean isConnect = gameService.connect(user, roomNumber, channelPresence.clientId());
 		if (!isConnect)
 		{
 			// TODO 에러처리
@@ -47,6 +57,6 @@ public class ConntectionController
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		ChannelPresence channelPresence = channelService.parsePresence(req);
 		System.out.println(channelPresence.clientId());
-		gameService.disconnectClient(channelPresence.clientId());
+		gameService.disconnect(channelPresence.clientId());
 	}
 }
