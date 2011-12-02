@@ -93,7 +93,7 @@ function sendOpenCard(){
 }
 
 // Á¾Ä¡±â
-function sendringBell(){
+function sendRingBell(){
 	var xhr = new XMLHttpRequest();
 	xhr.open("post", "/hg/channel/ringBell?roomNumber=" + roomNumber);
 	xhr.send();

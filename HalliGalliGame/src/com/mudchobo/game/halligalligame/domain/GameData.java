@@ -23,39 +23,39 @@ public class GameData
 	private String[] cardPrefixArray = {"B", "L", "P", "S"};
 	private List<HGUser> userList;
 	private Stack<String> cardList;
+	private List<Stack<String>> openedCardList;
 	private int nowPlayer = 0;
 	private boolean isStart = false;
 	public GameData(int roomNumber) 
 	{
 		this.roomNumber = roomNumber;
 		userList = new ArrayList<HGUser>();
-		cardList = new Stack<String>();
 	}
 
 	/**
 	 * 게임 시작
 	 */
-	public void startGame()
+	public void startGame() throws JSONException
 	{
+		JSONObject jsonObject = new JSONObject();
+		
 		// 모두다 레디했는지 확인
 		if (!isAllReady())
 		{
 			// 모두 레디하지 않음.
-			JSONObject jsonObject = new JSONObject();
-			try 
-			{
-				jsonObject.put("result", "error");
-				jsonObject.put("msg", "모두 준비를 하지 않았습니다.");
-			} 
-			catch (JSONException e) 
-			{
-				e.printStackTrace();
-			}
+			jsonObject.put("result", "error");
+			jsonObject.put("msg", "모두 준비를 하지 않았습니다.");
 			sendToAll(jsonObject.toString());
 			return;
 		}
 		// 시작사용자는 0
 		nowPlayer = 0;
+		cardList = new Stack<String>();
+		openedCardList = new ArrayList<Stack<String>>();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			openedCardList.add(new Stack<String>());
+		}
 		
 		// 카드생성 및 초기화
 		String[] tempCardList = new String[56];
@@ -109,56 +109,72 @@ public class GameData
 		}
 		isStart = true;
 		
-		JSONObject jsonObject = new JSONObject();
-		try 
-		{
-			jsonObject.put("result", "start");
-		} 
-		catch (JSONException e) 
-		{
-			e.printStackTrace();
-		}
+		jsonObject.put("result", "start");
 		sendToAll(jsonObject.toString());
 	}
 
-	public void stopGame()
+	public void stopGame() throws JSONException
 	{
-		// TODO 게임중단
+		// 게임중단
 		isStart = false;
 		JSONObject jsonObject = new JSONObject();
-		try 
-		{
-			jsonObject.put("result", "stopGame");
-		} 
-		catch (JSONException e) 
-		{
-			e.printStackTrace();
-		}
+		jsonObject.put("result", "stopGame");
 		sendToAll(jsonObject.toString());
 	}
 	
-	public String openCard(User user)
+	public void openCard(User user) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject();
 		HGUser hgUser = userList.get(nowPlayer);
 		if (hgUser.getUser().getUserId().equals(user.getUserId()))
 		{
 			String card = hgUser.flipCard();
+			// 해당 사용자의 카드가 없어서 죽은 경우
 			if (card == "")
 			{
 				
 			}
-			cardList.push(card);
+			// 카드가 존재하는 경우
+			else
+			{
+				openedCardList.get(nowPlayer).push(card);
+				nowPlayer++;
+				if (userList.size() <= nowPlayer)
+				{
+					nowPlayer = 0;
+				}
+				jsonObject.put("result", "opedCard");
+				jsonObject.put("next", userList.get(nowPlayer).getUser().getNickname());
+				JSONArray jsonArray = new JSONArray();
+				for (int i = 0; i < userList.size(); i++)
+				{
+					Stack<String> stack = openedCardList.get(i);
+					String openedCard = "";
+					if (stack.size() != 0)
+					{
+						openedCard = stack.get(stack.size() - 1);
+					}
+					jsonArray.put(openedCard);
+				}
+				jsonObject.put("openedCardList", jsonArray.toString());
+			}
 		}
-		return "ok";
+		else
+		{
+			jsonObject.put("result", "error");
+			jsonObject.put("msg", "당신 순서가 아닙니다.");
+		}
+		sendToAll(jsonObject.toString());
 	}
 	
-	public void ringBell(User user) 
+	public void ringBell(User user) throws JSONException
 	{
-		
+		// 종이 맞는지 확인
+		// 맞으면 openedCardList에서 카드 다 가지기 
+		// 틀리면 다른 사람에게 카드 한장씩 주기
 	}
 	
-	public void addUser(User user) 
+	public void addUser(User user) throws JSONException 
 	{
 		HGUser hgUser = new HGUser();
 		hgUser.setUser(user);
@@ -168,7 +184,7 @@ public class GameData
 		sendUserList();
 	}
 
-	public void removeUser(User user)
+	public void removeUser(User user) throws JSONException
 	{
 		for (int i = 0; i < userList.size(); i++)
 		{
@@ -203,7 +219,7 @@ public class GameData
 		return true;
 	}
 	
-	public void setReady(User user, Boolean isReady)
+	public void setReady(User user, Boolean isReady) throws JSONException
 	{
 		System.out.println("setReady = " + user.getUserId() + " " + isReady);
 		for (int i =0; i < userList.size(); i++)
@@ -229,24 +245,10 @@ public class GameData
 		return isStart;
 	}
 
-	public List<String> getOpenedCardList() 
-	{
-		int end = 4;
-		if (cardList.size() < 4)
-		{
-			
-		}
-		for (int i = 0; (i < cardList.size()) && (i < 4); i++)
-		{
-			
-		}
-		return null;
-	}
-
 	/**
 	 * 유저목록 보내기
 	 */
-	public void sendUserList()
+	public void sendUserList() throws JSONException
 	{
 		// 유저목록보내기
 		JSONArray jsonArray = new JSONArray();
@@ -265,15 +267,8 @@ public class GameData
 			jsonArray.put(map);
 		}
 		JSONObject jsonObject = new JSONObject();
-		try 
-		{
-			jsonObject.put("result", "userList");
-			jsonObject.put("data", jsonArray);
-		}
-		catch (JSONException e) 
-		{
-			e.printStackTrace();
-		}
+		jsonObject.put("result", "userList");
+		jsonObject.put("data", jsonArray);
 		sendToAll(jsonObject.toString());
 	}
 

@@ -1,9 +1,6 @@
 package com.mudchobo.game.halligalligame.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.repackaged.org.json.JSONObject;
 import com.mudchobo.game.halligalligame.services.GameService;
 
 @Controller
@@ -71,7 +67,8 @@ public class ChannelController
 	
 	@RequestMapping(value="/openCard", method=RequestMethod.POST)
 	public void openCard(
-			@RequestParam("roomNumber") int roomNumber) throws IOException
+			@RequestParam("roomNumber") int roomNumber,
+			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		User user = getUser();
 		gameService.openCard(user, roomNumber);
@@ -79,7 +76,8 @@ public class ChannelController
 	
 	@RequestMapping(value="/ringBell", method=RequestMethod.POST)
 	public void ringBell(
-			@RequestParam("roomNumber") int roomNumber) throws IOException
+			@RequestParam("roomNumber") int roomNumber,
+			HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		User user = getUser();
 		gameService.ringBell(user, roomNumber);

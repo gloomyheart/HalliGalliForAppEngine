@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.google.appengine.api.users.User;
+import com.google.appengine.repackaged.org.json.JSONException;
 import com.mudchobo.game.halligalligame.domain.GameData;
 import com.mudchobo.game.halligalligame.domain.HGUser;
 
@@ -99,7 +100,11 @@ public class GameService {
 		
 		// 해당방번호에 유저추가
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.addUser(user);
+		try {
+			gameData.addUser(user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return true;
 	}
 	
@@ -117,7 +122,11 @@ public class GameService {
 		
 		// 해당방에 유저삭제
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.removeUser(user);
+		try {
+			gameData.removeUser(user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -129,7 +138,11 @@ public class GameService {
 	public void setReady(User user, Boolean isReady, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.setReady(user, isReady);
+		try {
+			gameData.setReady(user, isReady);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -140,18 +153,11 @@ public class GameService {
 	public void startGame(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.startGame();
-	}
-	
-	
-	/**
-	 * 카드리스트 얻기
-	 * @return
-	 */
-	public List<String> getCurrentCardList(int roomNumber) 
-	{
-		GameData gameData = gameDataList.get(roomNumber);
-		return gameData.getOpenedCardList();
+		try {
+			gameData.startGame();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -162,7 +168,11 @@ public class GameService {
 	public void openCard(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.openCard(user);
+		try {
+			gameData.openCard(user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -173,7 +183,11 @@ public class GameService {
 	public void ringBell(User user, int roomNumber)
 	{
 		GameData gameData = gameDataList.get(roomNumber);
-		gameData.ringBell(user);
+		try {
+			gameData.ringBell(user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
