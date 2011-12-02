@@ -29,6 +29,9 @@ function onMessage(m){
 		$("#btnBell").removeClass("ui-disabled");
 		$("#btnOpenCard").removeClass("ui-disabled");
 	}
+	else if (r.result == "openedCardList"){
+		
+	}
 }
 
 function drawUserList(userList){

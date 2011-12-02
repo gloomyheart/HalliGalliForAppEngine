@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
-import java.util.logging.Logger;
-
-import org.mortbay.util.ajax.JSON;
 
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
@@ -17,12 +14,10 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.repackaged.org.json.JSONArray;
 import com.google.appengine.repackaged.org.json.JSONException;
 import com.google.appengine.repackaged.org.json.JSONObject;
-import com.mudchobo.game.halligalligame.controllers.TestController;
 
 public class GameData 
 {
 	private String prefix = "Channel";
-	private static final Logger log = Logger.getLogger(TestController.class.getName());
 
 	private int roomNumber = 0;
 	private String[] cardPrefixArray = {"B", "L", "P", "S"};
@@ -39,7 +34,6 @@ public class GameData
 
 	/**
 	 * 게임 시작
-	 * @return start:시작, notPeople:사람이부족한경우 
 	 */
 	public void startGame()
 	{

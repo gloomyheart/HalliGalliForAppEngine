@@ -43,10 +43,10 @@
 					sendStart();
 				});
 				$("#btnOpenCard").click(function(){
-					
+					sendOpenCard();
 				});
-				$("#btnRing").click(function(){
-					
+				$("#btnRingBell").click(function(){
+					sendRingBell();
 				});
 				$("#btnChat").click(function(){
 					var val = $("#inputChat").val();
@@ -78,7 +78,7 @@
 					<a id="btnStart" href="#" data-role="button">시작</a>
 					<a id="btnReady" href="#" data-role="button">준비</a>
 					<a id="btnOpenCard" href="#" data-role="button">뒤집기</a>
-					<a id="btnRing" href="#" data-role="button">벨</a>
+					<a id="btnRingBell" href="#" data-role="button">벨</a>
 				</div>
 			</div>
 		</div>
