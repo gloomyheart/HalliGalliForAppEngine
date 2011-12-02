@@ -68,10 +68,20 @@
 		</script>
 	</head>
 	<body>
-		<input type="button" id="btnReady" value="준비"/>
-		<input type="button" id="btnStart" value="시작"/>
-		<input type="button" id="btnOpenCard" value="뒤집기"/>
-		<input type="button" id="btnRing" value="벨"/>
+		<div data-role="page">
+			<div data-role="header">
+				<h1>Halli Galli</h1>
+			</div>
+			<div data-role="content">
+				<canvas></canvas>
+				<div data-role="controlgroup" data-type="horizontal">
+					<a id="btnStart" href="#" data-role="button">시작</a>
+					<a id="btnReady" href="#" data-role="button">준비</a>
+					<a id="btnOpenCard" href="#" data-role="button">뒤집기</a>
+					<a id="btnRing" href="#" data-role="button">벨</a>
+				</div>
+			</div>
+		</div>
 		<input type="text" id="inputChat" />
 		<input type="button" id="btnChat" value="보내기"/>
 		내용 : <div class="divResult"><ul></ul></div>

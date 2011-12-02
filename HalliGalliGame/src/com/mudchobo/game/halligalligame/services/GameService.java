@@ -66,6 +66,7 @@ public class GameService {
 	 */
 	public boolean connect(String clientId)
 	{
+		// 유저목록에 있는지 확인 후 있으면 false(중복접속 막기)
 		HGUser hgUser = (HGUser) userList.get(clientId);
 		if (hgUser != null)
 		{
@@ -160,7 +161,8 @@ public class GameService {
 	 */
 	public void openCard(User user, int roomNumber)
 	{
-		
+		GameData gameData = gameDataList.get(roomNumber);
+		gameData.openCard(user);
 	}
 	
 	/**
@@ -170,7 +172,8 @@ public class GameService {
 	 */
 	public void ringBell(User user, int roomNumber)
 	{
-		
+		GameData gameData = gameDataList.get(roomNumber);
+		gameData.ringBell(user);
 	}
 	
 	/**

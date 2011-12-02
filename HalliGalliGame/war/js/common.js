@@ -6,38 +6,55 @@ var number = 0;
 
 function onOpen(){
 	$(".divResult ul").prepend("<li>open!</li>");
+	disableAllButton();
 	connectRoom();
 };
 
 function onMessage(m){
 	console.log(m.data);
 	
-	var m = eval(m.data);
-	if (m.data.result == "chat"){
-		$(".divResult ul").prepend(m.data.msg);
+	var r = eval("(" + m.data + ")");
+	if (r.result == "chat"){
+		$(".divResult ul").prepend(r.msg);
 	}
-	else if (m.data.result == "userList"){
-		$(".divResult ul").prepend(m.userList);
+	else if (r.result == "userList"){
+		$(".divResult ul").prepend(m.data);
 		// TODO 접속현황 그리기
-		var userList = m.data.data;
-		for (var i=0; i<userList.length; i++){
-			if (userList[i].userId == userId && i == 0){
-				isKing = true;
-			} else {
-				isKing = false;
-			}
-			// TODO 그리기
-		}
-		
-		if (isKing){
-			$("#btnStart").show();
-			$("#btnReady").hide();
-		} else{
-			$("#btnStart").hide();
-			$("#btnReady").show();
-		}
+		var userList = r.data;
+		drawUserList(userList);
+	}
+	else if (r.result == "start"){
+		$("#btnStart").addClass("ui-disabled");
+		$("#btnReady").addClass("ui-disabled");
+		$("#btnBell").removeClass("ui-disabled");
+		$("#btnOpenCard").removeClass("ui-disabled");
 	}
 }
+
+function drawUserList(userList){
+	isKing = false;
+	for (var i=0; i<userList.length; i++){
+		if (userList[i].userId == userId && i == 0){
+			isKing = true;
+		} 
+		// TODO 그리기
+	}
+	if (isKing){
+		$("#btnStart").removeClass("ui-disabled");
+		$("#btnReady").addClass("ui-disabled");
+	} else{
+		$("#btnStart").addClass("ui-disabled");
+		$("#btnReady").removeClass("ui-disabled");
+	}
+}
+
+function disableAllButton(){
+	$("#btnStart").removeClass("ui-disabled");
+	$("#btnReady").removeClass("ui-disabled");
+	$("#btnBell").removeClass("ui-disabled");
+	$("#btnOpenCard").removeClass("ui-disabled");
+}
+
 // 최초연결 시
 function connectRoom(){
 	var xhr = new XMLHttpRequest();
@@ -64,3 +81,17 @@ function sendStart(){
 	xhr.open("post", "/hg/channel/start?roomNumber=" + roomNumber);
 	xhr.send();
 } 
+
+// 카드뒤집기
+function sendOpenCard(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("post", "/hg/channel/openCard?roomNumber=" + roomNumber);
+	xhr.send();
+}
+
+// 종치기
+function sendringBell(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("post", "/hg/channel/ringBell?roomNumber=" + roomNumber);
+	xhr.send();
+}

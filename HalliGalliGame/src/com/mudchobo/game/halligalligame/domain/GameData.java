@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import org.mortbay.util.ajax.JSON;
+
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -129,21 +131,37 @@ public class GameData
 	{
 		// TODO 게임중단
 		isStart = false;
+		JSONObject jsonObject = new JSONObject();
+		try 
+		{
+			jsonObject.put("result", "stopGame");
+		} 
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+		sendToAll(jsonObject.toString());
 	}
 	
-	public String flipCard(User user)
+	public String openCard(User user)
 	{
+		JSONObject jsonObject = new JSONObject();
 		HGUser hgUser = userList.get(nowPlayer);
-		if (hgUser.getUser().getUserId() == user.getUserId())
+		if (hgUser.getUser().getUserId().equals(user.getUserId()))
 		{
 			String card = hgUser.flipCard();
 			if (card == "")
 			{
-				return "not card";
+				
 			}
 			cardList.push(card);
 		}
 		return "ok";
+	}
+	
+	public void ringBell(User user) 
+	{
+		
 	}
 	
 	public void addUser(User user) 
@@ -161,17 +179,14 @@ public class GameData
 		for (int i = 0; i < userList.size(); i++)
 		{
 			HGUser hgUser = userList.get(i);
-			if (user.getUserId() == hgUser.getUser().getUserId())
+			if (user.getUserId().equals(hgUser.getUser().getUserId()))
 			{
 				userList.remove(i);
 				break;
 			}
 		}
-		if (isStart)
-		{
-			// 게임중이면 게임중단
-			stopGame();
-		}
+		// 게임중이면 게임중단
+		stopGame();
 		
 		// 유저목록 보내기
 		sendUserList();
@@ -196,15 +211,18 @@ public class GameData
 	
 	public void setReady(User user, Boolean isReady)
 	{
+		System.out.println("setReady = " + user.getUserId() + " " + isReady);
 		for (int i =0; i < userList.size(); i++)
 		{
 			HGUser hgUser = userList.get(i);
-			if (user.getUserId() == hgUser.getUser().getUserId())
+			if (user.getUserId().equals(hgUser.getUser().getUserId()))
 			{
+				System.out.println("isReady = " + isReady);
 				hgUser.setIsReady(isReady);
 				break;
 			}
 		}
+		sendUserList();
 	}
 	
 	public int getUserListSize()
@@ -301,7 +319,7 @@ public class GameData
 		for (int i = 0; i < userList.size(); i++)
 		{
 			User user = userList.get(i).getUser();
-			if (user.getUserId() == hgUser.getUser().getUserId())
+			if (user.getUserId().equals(hgUser.getUser().getUserId()))
 			{
 				continue;
 			}

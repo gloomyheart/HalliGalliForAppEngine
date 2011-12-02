@@ -67,8 +67,22 @@ public class ChannelController
 	{
 		User user = getUser();
 		gameService.chat(user, roomNumber, msg);
-		
-		
+	}
+	
+	@RequestMapping(value="/openCard", method=RequestMethod.POST)
+	public void openCard(
+			@RequestParam("roomNumber") int roomNumber) throws IOException
+	{
+		User user = getUser();
+		gameService.openCard(user, roomNumber);
+	}
+	
+	@RequestMapping(value="/ringBell", method=RequestMethod.POST)
+	public void ringBell(
+			@RequestParam("roomNumber") int roomNumber) throws IOException
+	{
+		User user = getUser();
+		gameService.ringBell(user, roomNumber);
 	}
 	
 	private User getUser()

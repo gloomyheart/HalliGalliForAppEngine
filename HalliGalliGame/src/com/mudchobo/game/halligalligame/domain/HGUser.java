@@ -9,12 +9,12 @@ public class HGUser {
 
 	private int roomNumber;
 	private User user;
-	private Boolean isReady;
+	private Boolean isReady = false;
 	private Stack<String> cardList;
 	private Boolean isDead;
 	private String clientId;
 	
-	public int countCard(){
+	public int countCard(){		
 		return cardList.size();
 	}
 	public String flipCard() {
