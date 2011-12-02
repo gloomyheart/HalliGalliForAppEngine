@@ -4,21 +4,24 @@ var isKing = false;
 var isReady = false;
 var number = 0;
 
-function(){
+function onOpen(){
 	$(".divResult ul").prepend("<li>open!</li>");
 	connectRoom();
 };
 
 function onMessage(m){
-	var m = eval(m);
+	console.log(m.data);
+	
+	var m = eval(m.data);
 	if (m.data.result == "chat"){
-		$(".divResult").prepend(m.msg);
+		$(".divResult ul").prepend(m.data.msg);
 	}
 	else if (m.data.result == "userList"){
-		$(".divResult").prepend(m.userList);
+		$(".divResult ul").prepend(m.userList);
 		// TODO 접속현황 그리기
-		for (var i=0; i<m.userList.length; i++){
-			if (m.userList[i].userId == userId && i == 0){
+		var userList = m.data.data;
+		for (var i=0; i<userList.length; i++){
+			if (userList[i].userId == userId && i == 0){
 				isKing = true;
 			} else {
 				isKing = false;
