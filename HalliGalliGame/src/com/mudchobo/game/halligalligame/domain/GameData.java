@@ -124,7 +124,6 @@ public class GameData
 	
 	public void openCard(User user) throws JSONException
 	{
-		JSONObject jsonObject = new JSONObject();
 		HGUser hgUser = userList.get(nowPlayer);
 		if (hgUser.getUser().getUserId().equals(user.getUserId()))
 		{
@@ -143,39 +142,88 @@ public class GameData
 				{
 					nowPlayer = 0;
 				}
-				jsonObject.put("result", "opedCard");
-				jsonObject.put("next", userList.get(nowPlayer).getUser().getNickname());
-				JSONArray jsonArray = new JSONArray();
-				for (int i = 0; i < userList.size(); i++)
-				{
-					Stack<String> stack = openedCardList.get(i);
-					String openedCard = "";
-					if (stack.size() != 0)
-					{
-						openedCard = stack.get(stack.size() - 1);
-					}
-					jsonArray.put(openedCard);
-				}
-				jsonObject.put("openedCardList", jsonArray.toString());
+				sendOpenedCardList();
 			}
 		}
 		else
 		{
+			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("result", "error");
 			jsonObject.put("msg", "당신 순서가 아닙니다.");
+			sendToAll(jsonObject.toString());
 		}
-		sendToAll(jsonObject.toString());
 	}
 	
 	public void ringBell(User user) throws JSONException
 	{
-		// 종이 맞는지 확인
-		// 맞으면 openedCardList에서 카드 다 가지기 
-		// 틀리면 다른 사람에게 카드 한장씩 주기
+		// 합이 5가 맞는지 확인.
+		int totalCount = 0;
+		for (int i = 0; i < openedCardList.size(); i++)
+		{
+			Stack<String> stack = openedCardList.get(i);
+			String openedCard = "";
+			if (stack.size() != 0)
+			{
+				openedCard = stack.get(stack.size() - 1);
+				totalCount += Integer.parseInt(openedCard.substring(1));
+			}
+		}
+		
+		// 해당유저 찾기
+		HGUser hgUser = new HGUser();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			HGUser tempHGUser = userList.get(i); 
+			if (user.getUserId().equals(tempHGUser.getUser().getUserId()))
+			hgUser = tempHGUser;
+		}
+		
+		JSONObject jsonObject = new JSONObject();
+		// 합이 5이면 성공. 오픈된 카드를 자신이 다 가진다.
+		if (totalCount == 5)
+		{
+			for (int i = 0; i < openedCardList.size(); i++)
+			{
+				Stack<String> stack = openedCardList.get(i);
+				for (; stack.size() != 0;)
+				{
+					hgUser.addCard(stack.pop());
+				}
+			}
+			jsonObject.put("ringBell", user.getNickname() + "님이 종치기에 성공했습니다.");
+			sendOpenedCardList();
+		}
+		// 종 잘못침을 알리고, 자신의 카드를 사용자들에게 한장씩 나눠준다.
+		else
+		{
+			for (int i = 0; i < userList.size(); i++)
+			{
+				HGUser anotherHGUser = userList.get(i);
+				if (!user.getUserId().equals(anotherHGUser.getUser().getUserId()))
+				{
+					anotherHGUser.addCard(hgUser.getCard());
+				}
+			}
+			jsonObject.put("ringBell", user.getNickname() + "님이 종치기에 실패했습니다.");
+			sendOpenedCardList();
+		}
+		sendToAll(jsonObject.toString());
 	}
 	
 	public void addUser(User user) throws JSONException 
 	{
+		// 같은 유저가 있는지 확인 후 없으면 에러처리
+		for (int i = 0; i < userList.size(); i++)
+		{
+			HGUser hgUser = userList.get(i);
+			if (hgUser.getUser().getUserId().equals(user.getUserId()))
+			{
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("error", "exist");
+				sendToAll(jsonObject.toString());
+				return;
+			}
+		}
 		HGUser hgUser = new HGUser();
 		hgUser.setUser(user);
 		userList.add(hgUser);
@@ -245,6 +293,29 @@ public class GameData
 		return isStart;
 	}
 
+	public void sendOpenedCardList() throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("result", "opedCard");
+		jsonObject.put("next", userList.get(nowPlayer).getUser().getNickname());
+		JSONArray jsonArray = new JSONArray();
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			Stack<String> stack = openedCardList.get(i);
+			String openedCard = "";
+			if (stack.size() != 0)
+			{
+				openedCard = stack.get(stack.size() - 1);
+			}
+			map.put("openedCard", openedCard);
+			map.put("count", userList.get(i).getCardCount());
+			jsonArray.put(map);
+		}
+		jsonObject.put("openedCardList", jsonArray.toString());
+		sendToAll(jsonObject.toString());
+	}
+	
 	/**
 	 * 유저목록 보내기
 	 */
@@ -291,8 +362,6 @@ public class GameData
 		}
 		sendToAll(jsonObject.toString());
 	}
-	
-	
 	
 	public void sendToAll(String msg)
 	{

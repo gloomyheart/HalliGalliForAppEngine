@@ -30,6 +30,21 @@ public class HGUser {
 		return card;
 	}
 	
+	public void addCard(String card) 
+	{
+		cardList.push(card);
+	}
+	
+	public String getCard()
+	{
+		return cardList.pop();
+	}
+	
+	public int getCardCount()
+	{
+		return cardList.size();
+	}
+	
 	public int getRoomNumber() {
 		return roomNumber;
 	}
