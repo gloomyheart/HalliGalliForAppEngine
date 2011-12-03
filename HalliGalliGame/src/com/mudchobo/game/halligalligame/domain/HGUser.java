@@ -11,7 +11,7 @@ public class HGUser {
 	private User user;
 	private Boolean isReady = false;
 	private Stack<String> cardList;
-	private Boolean isDead;
+	private Boolean isDead = false;
 	private String clientId;
 	
 	public int countCard(){		

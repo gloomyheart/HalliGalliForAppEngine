@@ -19,9 +19,9 @@ function onMessage(m){
 	}
 	else if (r.result == "userList"){
 		$(".divResult ul").prepend(m.data);
-		// TODO 접속현황 그리기
-		var userList = r.data;
-		drawUserList(userList);
+		// 접속현황 그리기
+		userList = r.data;
+		setUserList();
 	}
 	else if (r.result == "start"){
 		$("#btnStart").addClass("ui-disabled");
@@ -29,18 +29,17 @@ function onMessage(m){
 		$("#btnBell").removeClass("ui-disabled");
 		$("#btnOpenCard").removeClass("ui-disabled");
 	}
-	else if (r.result == "openedCardList"){
-		
+	else if (r.result == "openCard"){
+		openedCardList = r.openedCardList;
 	}
 }
 
-function drawUserList(userList){
+function setUserList(){
 	isKing = false;
 	for (var i=0; i<userList.length; i++){
 		if (userList[i].userId == userId && i == 0){
 			isKing = true;
 		} 
-		// TODO 그리기
 	}
 	if (isKing){
 		$("#btnStart").removeClass("ui-disabled");
@@ -49,6 +48,7 @@ function drawUserList(userList){
 		$("#btnStart").addClass("ui-disabled");
 		$("#btnReady").removeClass("ui-disabled");
 	}
+	drawUserList();
 }
 
 function disableAllButton(){

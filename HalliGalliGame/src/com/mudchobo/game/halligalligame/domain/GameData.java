@@ -120,42 +120,53 @@ public class GameData
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("result", "stopGame");
 		sendToAll(jsonObject.toString());
+		sendUserList();
 	}
 	
 	public void openCard(User user) throws JSONException
 	{
+		if (!isStart){
+			return;
+		}
 		HGUser hgUser = userList.get(nowPlayer);
 		if (hgUser.getUser().getUserId().equals(user.getUserId()))
 		{
 			String card = hgUser.flipCard();
-			// 해당 사용자의 카드가 없어서 죽은 경우
-			if (card == "")
+			// 해당 사용자의 카드가 이제 없는 경우 죽음처리
+			if (hgUser.getCardCount() == 0)
 			{
-				
+				hgUser.setIsDead(true);
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("result", "dead");
+				jsonObject.put("userId", hgUser.getUser().getUserId());
+				sendToAll(jsonObject.toString());
 			}
-			// 카드가 존재하는 경우
-			else
+			
+			openedCardList.get(nowPlayer).push(card);
+			nowPlayer++;
+			if (userList.size() <= nowPlayer)
 			{
-				openedCardList.get(nowPlayer).push(card);
-				nowPlayer++;
-				if (userList.size() <= nowPlayer)
-				{
-					nowPlayer = 0;
-				}
-				sendOpenedCardList();
+				nowPlayer = 0;
 			}
+			sendOpenedCardList();
 		}
 		else
 		{
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("result", "error");
 			jsonObject.put("msg", "당신 순서가 아닙니다.");
-			sendToAll(jsonObject.toString());
+			sendMessage(user, jsonObject.toString());
 		}
+		
+		// 이겼는지 체크
+		checkWin();
 	}
 	
 	public void ringBell(User user) throws JSONException
 	{
+		if (!isStart){
+			return;
+		}
 		// 합이 5가 맞는지 확인.
 		int totalCount = 0;
 		for (int i = 0; i < openedCardList.size(); i++)
@@ -208,6 +219,9 @@ public class GameData
 			sendOpenedCardList();
 		}
 		sendToAll(jsonObject.toString());
+		
+		// 이겼는지 체크
+		checkWin();
 	}
 	
 	public void addUser(User user) throws JSONException 
@@ -227,7 +241,6 @@ public class GameData
 		HGUser hgUser = new HGUser();
 		hgUser.setUser(user);
 		userList.add(hgUser);
-		
 		// 유저목록 보내기
 		sendUserList();
 	}
@@ -266,6 +279,36 @@ public class GameData
 		}
 		return true;
 	}
+
+	private boolean checkWin() throws JSONException 
+	{
+		int deadCount = 0;
+		HGUser winHGUser = null;
+		for (int i = 0; i < userList.size(); i++)
+		{
+			HGUser hgUser = userList.get(i);
+			if (!hgUser.getIsDead())
+			{
+				winHGUser = hgUser;
+			}
+			else
+			{
+				deadCount++;
+			}
+		}
+		if (deadCount == userList.size() - 1)
+		{
+			// 해당 사용자가 이김
+			isStart = false;
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("result", "win");
+			jsonObject.put("winner", winHGUser.getUser().getNickname() + "님이 이겼습니다.");
+			sendToAll(jsonObject.toString());
+			sendUserList();
+			return true;
+		}
+		return false;
+	}
 	
 	public void setReady(User user, Boolean isReady) throws JSONException
 	{
@@ -296,7 +339,7 @@ public class GameData
 	public void sendOpenedCardList() throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("result", "opedCard");
+		jsonObject.put("result", "openCard");
 		jsonObject.put("next", userList.get(nowPlayer).getUser().getNickname());
 		JSONArray jsonArray = new JSONArray();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -312,7 +355,7 @@ public class GameData
 			map.put("count", userList.get(i).getCardCount());
 			jsonArray.put(map);
 		}
-		jsonObject.put("openedCardList", jsonArray.toString());
+		jsonObject.put("openedCardList", jsonArray);
 		sendToAll(jsonObject.toString());
 	}
 	

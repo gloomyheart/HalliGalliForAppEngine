@@ -9,12 +9,15 @@
 		<script type="text/javascript" src="/js/lib/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="/js/lib/jquery.mobile-1.0.min.js"></script>
 		<script type="text/javascript" src="/js/common.js"></script>
+		<script type="text/javascript" src="/js/draw.js"></script>
 		<script type="text/javascript">
 			var channel;
 			var socket;
 			var roomNumber = "${roomNumber}";
 			var nickName = "${nickName}";
 			var userId = "${userId}";
+			var userList = [];
+			var openedCardList = [];
 			
 			$(document).ready(function(){
 				// 채널소켓
@@ -64,6 +67,23 @@
 						sendChat(val);
 					}
 				});
+				
+				// 보드판 그리기
+				width = $(window).width();
+				if (width >= 300){
+					width = 300;
+				}
+				height = width * 4 / 3;
+				$("#canvas").width(width);
+				$("#canvas").height(height);
+				var canvas = $("#canvas").get(0);
+				ctx = canvas.getContext("2d");
+				ctx.canvas.width = width;
+				ctx.canvas.height = height;
+				cardWidth = width*70/W;
+				cardHeight = height*150/H;
+				// 보드판그리기 타이머시작
+				setInterval(drawBoard, 10);
 			});
 		</script>
 	</head>
@@ -73,7 +93,7 @@
 				<h1>Halli Galli</h1>
 			</div>
 			<div data-role="content">
-				<canvas></canvas>
+				<canvas id="canvas"></canvas>
 				<div data-role="controlgroup" data-type="horizontal">
 					<a id="btnStart" href="#" data-role="button">시작</a>
 					<a id="btnReady" href="#" data-role="button">준비</a>
