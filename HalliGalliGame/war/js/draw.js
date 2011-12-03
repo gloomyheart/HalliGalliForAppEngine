@@ -67,7 +67,7 @@ function drawCardList(){
 	x = [70*width/W, 230*width/W, 70*width/W, 230*width/W];
 	y = [25*height/H, 25*height/H, 225*height/H, 225*height/H];
 	var xx = [0, 160*width/W, 0, 160*width/W];
-	var yy = [175*height/H, 175*height/H, 225*height/H, 225*height/H];
+	var yy = [175*height/H, 175*height/H, 375*height/H, 375*height/H];
 	for (var i=0; i<4; i++){
 		if (openedCardList.length <= i){
 			ctx.drawImage(cardBack, x[i], y[i], cardWidth, cardHeight);

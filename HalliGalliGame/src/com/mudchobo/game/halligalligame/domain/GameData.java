@@ -155,6 +155,18 @@ public class GameData
 			{
 				nowPlayer = 0;
 			}
+			for (int i = 0; i < userList.size(); i++)
+			{
+				HGUser hgUser2 = userList.get(nowPlayer);
+				if (hgUser2.getIsDead())
+				{
+					nowPlayer++;
+					if (userList.size() <= nowPlayer)
+					{
+						nowPlayer = 0;
+					}
+				}
+			}
 			sendOpenedCardList();
 		}
 		else

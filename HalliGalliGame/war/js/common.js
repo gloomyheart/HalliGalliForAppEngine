@@ -1,5 +1,9 @@
 /** 공용 js함수 **/
 
+if (!console){
+	console = {};
+	console.log = function(){}
+}
 var isKing = false;
 var isReady = false;
 var number = 0;
@@ -15,10 +19,9 @@ function onMessage(m){
 	
 	var r = eval("(" + m.data + ")");
 	if (r.result == "chat"){
-		$(".divResult ul").prepend(r.msg);
+		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
 	else if (r.result == "userList"){
-		$(".divResult ul").prepend(m.data);
 		userList = r.data;
 		setUserList();
 	}
