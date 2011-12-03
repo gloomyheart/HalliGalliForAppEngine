@@ -312,6 +312,12 @@ public class GameData
 			jsonObject.put("winner", winHGUser.getUser().getNickname() + "¥‘¿Ã ¿Ã∞ÂΩ¿¥œ¥Ÿ.");
 			sendToAll(jsonObject.toString());
 			sendUserList();
+			for (int i = 0; i < openedCardList.size(); i++)
+			{
+				Stack<String> stack = openedCardList.get(i);
+				stack.removeAllElements();
+			}
+			sendOpenedCardList();
 			return true;
 		}
 		return false;
@@ -325,8 +331,11 @@ public class GameData
 			HGUser hgUser = userList.get(i);
 			if (user.getUserId().equals(hgUser.getUser().getUserId()))
 			{
-				System.out.println("isReady = " + isReady);
 				hgUser.setIsReady(isReady);
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("result", "ready");
+				jsonObject.put("msg", user.getNickname() + "¥‘¿Ã ¡ÿ∫Òøœ∑·!");
+				sendToAll(jsonObject.toString());
 				break;
 			}
 		}

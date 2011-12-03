@@ -74,11 +74,10 @@ function drawCardList(){
 		} else {
 			if (openedCardList[i].openedCard == ""){
 				ctx.drawImage(cardBack, x[i], y[i], cardWidth, cardHeight);
-				ctx.fillText("", xx[i], yy[i]);
 			} else {
 				ctx.drawImage(selectCard(openedCardList[i].openedCard), x[i], y[i], cardWidth, cardHeight);
-				ctx.fillText(openedCardList[i].count, xx[i], yy[i]);
 			}
+			ctx.fillText(openedCardList[i].count, xx[i], yy[i]);
 		}
 	}
 }

@@ -29,6 +29,9 @@ function onMessage(m){
 		$("#btnOpenCard").removeClass("ui-disabled");
 		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
+	else if (r.result == "ready"){
+		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
+	}
 	else if (r.result == "openCard"){
 		openedCardList = r.openedCardList;
 	}
