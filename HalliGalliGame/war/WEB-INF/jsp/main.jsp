@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
 		<link rel="stylesheet" href="/css/jquery.mobile-1.0.min.css" />
 		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 		<script type="text/javascript" src="/js/lib/jquery-1.7.1.min.js"></script>
@@ -51,29 +52,23 @@
 				$("#btnRingBell").click(function(){
 					sendRingBell();
 				});
-				$("#btnChat").click(function(){
-					var val = $("#inputChat").val();
-					if (val == ""){
-						return;
-					}
-					sendChat(val);
-				});
 				$("#inputChat").keyup(function(e){
 					if (e.keyCode == 13){
 						var val = $(this).val();
 						if (val == ""){
 							return;
 						}
+						$("#inputChat").val("");
 						sendChat(val);
 					}
 				});
 				
 				// 보드판 그리기
 				width = $(window).width();
-				if (width >= 300){
-					width = 300;
+				if (width >= W){
+					width = W;
 				}
-				height = width * 4 / 3;
+				height = width * H / W;
 				$("#canvas").width(width);
 				$("#canvas").height(height);
 				var canvas = $("#canvas").get(0);
@@ -94,16 +89,18 @@
 			</div>
 			<div data-role="content">
 				<canvas id="canvas"></canvas>
-				<div data-role="controlgroup" data-type="horizontal">
-					<a id="btnStart" href="#" data-role="button">시작</a>
-					<a id="btnReady" href="#" data-role="button">준비</a>
-					<a id="btnOpenCard" href="#" data-role="button">뒤집기</a>
-					<a id="btnRingBell" href="#" data-role="button">벨</a>
+				<fieldset class="ui-grid-c">
+					<div class="ui-block-a"><a id="btnStart" href="#" data-role="button">시작</a></div>
+					<div class="ui-block-b"><a id="btnReady" href="#" data-role="button">준비</a></div>	   
+					<div class="ui-block-c"><a id="btnOpenCard" href="#" data-role="button">뒤집기</a></div>	   
+					<div class="ui-block-d"><a id="btnRingBell" href="#" data-role="button">벨</a></div>	   
+				</fieldset>
+				<div>
+					<input type="text" id="inputChat" />
 				</div>
+				<ul id="ulList" data-role="listview">
+				</ul>
 			</div>
 		</div>
-		<input type="text" id="inputChat" />
-		<input type="button" id="btnChat" value="보내기"/>
-		내용 : <div class="divResult"><ul></ul></div>
     </body>
 </html>

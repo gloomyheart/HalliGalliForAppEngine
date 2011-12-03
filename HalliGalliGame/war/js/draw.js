@@ -59,17 +59,25 @@ function drawCardList(){
 		ctx.drawImage(cardBack, x[i], y[i], cardWidth, cardHeight);
 	}
 	
+	ctx.fillStyle = "#000000";
+	ctx.font = "normal 15px dotum";
+	ctx.textBaseline = "top";
+	
 	// 뒤집어진 카드 그리기
 	x = [70*width/W, 230*width/W, 70*width/W, 230*width/W];
 	y = [25*height/H, 25*height/H, 225*height/H, 225*height/H];
+	var xx = [0, 160*width/W, 0, 160*width/W];
+	var yy = [175*height/H, 175*height/H, 225*height/H, 225*height/H];
 	for (var i=0; i<4; i++){
 		if (openedCardList.length <= i){
 			ctx.drawImage(cardBack, x[i], y[i], cardWidth, cardHeight);
 		} else {
 			if (openedCardList[i].openedCard == ""){
 				ctx.drawImage(cardBack, x[i], y[i], cardWidth, cardHeight);
+				ctx.fillText("", xx[i], yy[i]);
 			} else {
 				ctx.drawImage(selectCard(openedCardList[i].openedCard), x[i], y[i], cardWidth, cardHeight);
+				ctx.fillText(openedCardList[i].count, xx[i], yy[i]);
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class GameData
 	/**
 	 * 게임 시작
 	 */
-	public void startGame() throws JSONException
+	public void startGame(User user) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject();
 		
@@ -45,7 +45,7 @@ public class GameData
 			// 모두 레디하지 않음.
 			jsonObject.put("result", "error");
 			jsonObject.put("msg", "모두 준비를 하지 않았습니다.");
-			sendToAll(jsonObject.toString());
+			sendMessage(user, jsonObject.toString());
 			return;
 		}
 		// 시작사용자는 0
@@ -100,16 +100,19 @@ public class GameData
 		// 클라이언트에게 카드나눠주기
 		for (int i = 0; i < userListSize; i++)
 		{
+			HGUser hgUser = userList.get(i);
 			Stack<String> stack = new Stack<String>();
 			for (int j = 0; j < (56 / userListSize); j++)
 			{
 				stack.push(cardList.pop());
 			}
-			userList.get(i).setCardList(stack);
+			hgUser.setCardList(stack);
+			hgUser.setIsDead(false);
 		}
 		isStart = true;
 		
 		jsonObject.put("result", "start");
+		jsonObject.put("msg", "게임시작!");
 		sendToAll(jsonObject.toString());
 	}
 
@@ -121,6 +124,10 @@ public class GameData
 		jsonObject.put("result", "stopGame");
 		sendToAll(jsonObject.toString());
 		sendUserList();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			userList.get(i).setIsReady(false);
+		}
 	}
 	
 	public void openCard(User user) throws JSONException
@@ -190,6 +197,7 @@ public class GameData
 		}
 		
 		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("result", "ringBell");
 		// 합이 5이면 성공. 오픈된 카드를 자신이 다 가진다.
 		if (totalCount == 5)
 		{
@@ -201,8 +209,7 @@ public class GameData
 					hgUser.addCard(stack.pop());
 				}
 			}
-			jsonObject.put("ringBell", user.getNickname() + "님이 종치기에 성공했습니다.");
-			sendOpenedCardList();
+			jsonObject.put("msg", user.getNickname() + "님이 종치기에 성공했습니다.");
 		}
 		// 종 잘못침을 알리고, 자신의 카드를 사용자들에게 한장씩 나눠준다.
 		else
@@ -215,11 +222,11 @@ public class GameData
 					anotherHGUser.addCard(hgUser.getCard());
 				}
 			}
-			jsonObject.put("ringBell", user.getNickname() + "님이 종치기에 실패했습니다.");
-			sendOpenedCardList();
+			jsonObject.put("msg", user.getNickname() + "님이 종치기에 실패했습니다.");
 		}
 		sendToAll(jsonObject.toString());
 		
+		sendOpenedCardList();
 		// 이겼는지 체크
 		checkWin();
 	}
@@ -397,7 +404,7 @@ public class GameData
 		try 
 		{
 			jsonObject.put("result", "chat");
-			jsonObject.put("msg", msg);
+			jsonObject.put("msg", user.getNickname() + ":" + msg);
 		}
 		catch (JSONException e) 
 		{

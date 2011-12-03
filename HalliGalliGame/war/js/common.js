@@ -19,7 +19,6 @@ function onMessage(m){
 	}
 	else if (r.result == "userList"){
 		$(".divResult ul").prepend(m.data);
-		// 접속현황 그리기
 		userList = r.data;
 		setUserList();
 	}
@@ -28,9 +27,21 @@ function onMessage(m){
 		$("#btnReady").addClass("ui-disabled");
 		$("#btnBell").removeClass("ui-disabled");
 		$("#btnOpenCard").removeClass("ui-disabled");
+		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
 	else if (r.result == "openCard"){
 		openedCardList = r.openedCardList;
+	}
+	else if (r.result == "ringBell"){
+		alert(r.msg);
+		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
+	}
+	else if (r.result == "win"){
+		alert(r.winner);
+		$("#ulList").prepend("<li>" + r.winner + "</li>").listview('refresh');
+	}
+	else if (r.result == "error"){
+		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
 }
 

@@ -154,7 +154,7 @@ public class GameService {
 	{
 		GameData gameData = gameDataList.get(roomNumber);
 		try {
-			gameData.startGame();
+			gameData.startGame(user);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
