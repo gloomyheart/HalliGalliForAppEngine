@@ -20,7 +20,7 @@
 			var userList = [];
 			var openedCardList = [];
 			
-			$(document).ready(function(){
+			function init(){
 				// 채널소켓
 				channel = new goog.appengine.Channel("${token}");
 				socket = channel.open();
@@ -34,6 +34,11 @@
 					alert("close!");
 					location.href = "/hg/index";
 				}
+			}
+			
+			$(document).ready(function(){
+				
+				setTimeout(init, 1000);
 				
 				// 버튼이벤트
 				$("#btnReady").click(function(){
