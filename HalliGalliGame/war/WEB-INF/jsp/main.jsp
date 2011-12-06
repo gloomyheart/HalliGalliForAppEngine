@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 		<script type="text/javascript" src="/js/lib/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="/js/lib/jquery.mobile-1.0.min.js"></script>
-		<script type="text/javascript" src="/js/common.js"></script>
+		<script type="text/javascript" src="/js/common.js?d=20111208"></script>
 		<script type="text/javascript" src="/js/draw.js"></script>
 		<script type="text/javascript">
 			var channel;
@@ -20,7 +20,9 @@
 			var userList = [];
 			var openedCardList = [];
 			
-			function init(){
+			
+			
+			$(document).ready(function(){
 				// 채널소켓
 				channel = new goog.appengine.Channel("${token}");
 				socket = channel.open();
@@ -34,11 +36,6 @@
 					alert("close!");
 					location.href = "/hg/index";
 				}
-			}
-			
-			$(document).ready(function(){
-				
-				setTimeout(init, 1000);
 				
 				// 버튼이벤트
 				$("#btnReady").click(function(){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.mudchobo.game.halligalligame.domain.HGUser;
 @Service
 public class GameService {
 	
+	private static final Logger log = Logger.getLogger(GameService.class.getName());
 	/**
 	 * 게임데이터 목록
 	 */
@@ -117,6 +119,9 @@ public class GameService {
 	{
 		// 사용자접속 목록에서 삭제
 		HGUser hgUser = (HGUser) userList.get(clientId);
+		if (hgUser == null){
+			return;
+		}
 		int roomNumber = hgUser.getRoomNumber();
 		User user = hgUser.getUser();
 		

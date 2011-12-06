@@ -9,9 +9,9 @@ var isReady = false;
 var number = 0;
 
 function onOpen(){
-	$(".divResult ul").prepend("<li>open!</li>");
+	$("#ulList").prepend("<li>open!</li>").listview('refresh');
 	disableAllButton();
-	connectRoom();
+	setTimeout(connectRoom, 1000);
 };
 
 function onMessage(m){
@@ -28,7 +28,7 @@ function onMessage(m){
 	else if (r.result == "start"){
 		$("#btnStart").addClass("ui-disabled");
 		$("#btnReady").addClass("ui-disabled");
-		$("#btnBell").removeClass("ui-disabled");
+		$("#btnRingBell").removeClass("ui-disabled");
 		$("#btnOpenCard").removeClass("ui-disabled");
 		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
@@ -69,10 +69,10 @@ function setUserList(){
 }
 
 function disableAllButton(){
-	$("#btnStart").removeClass("ui-disabled");
-	$("#btnReady").removeClass("ui-disabled");
-	$("#btnBell").removeClass("ui-disabled");
-	$("#btnOpenCard").removeClass("ui-disabled");
+	$("#btnStart").addClass("ui-disabled");
+	$("#btnReady").addClass("ui-disabled");
+	$("#btnRingBell").addClass("ui-disabled");
+	$("#btnOpenCard").addClass("ui-disabled");
 }
 
 // 최초연결 시
