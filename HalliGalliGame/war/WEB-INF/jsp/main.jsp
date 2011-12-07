@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 		<script type="text/javascript" src="/js/lib/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="/js/lib/jquery.mobile-1.0.min.js"></script>
-		<script type="text/javascript" src="/js/common.js?d=20111208"></script>
+		<script type="text/javascript" src="/js/common.js?d=2011120801"></script>
 		<script type="text/javascript" src="/js/draw.js"></script>
 		<script type="text/javascript">
 			var channel;
@@ -80,7 +80,7 @@
 				cardWidth = width*70/W;
 				cardHeight = height*150/H;
 				// 보드판그리기 타이머시작
-				//setInterval(drawBoard, 10);
+				setInterval(drawBoard, 10);
 			});
 		</script>
 	</head>
