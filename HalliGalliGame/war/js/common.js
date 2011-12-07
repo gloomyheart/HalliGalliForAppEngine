@@ -11,14 +11,16 @@ var number = 0;
 function onOpen(){
 	$("#ulList").prepend("<li>open!</li>").listview('refresh');
 	disableAllButton();
-	setTimeout(connectRoom, 1000);
 };
 
 function onMessage(m){
 	console.log(m.data);
 	
 	var r = eval("(" + m.data + ")");
-	if (r.result == "chat"){
+	if (r.result == "connect"){
+		connectRoom();
+	}
+	else if (r.result == "chat"){
 		$("#ulList").prepend("<li>" + r.msg + "</li>").listview('refresh');
 	}
 	else if (r.result == "userList"){

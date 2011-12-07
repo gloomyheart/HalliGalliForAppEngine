@@ -10,9 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelPresence;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
+import com.google.appengine.repackaged.org.json.JSONException;
+import com.google.appengine.repackaged.org.json.JSONObject;
 import com.mudchobo.game.halligalligame.services.GameService;
 
 @Controller
@@ -29,6 +32,15 @@ public class ConntectionController
 		System.out.println(channelPresence.clientId());
 		
 		gameService.connect(channelPresence.clientId());
+		
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("result", "connect");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		channelService.sendMessage(new ChannelMessage(channelPresence.clientId(), jsonObject.toString()));
 	}
 	
 	@RequestMapping(value="/_ah/channel/disconnected", method=RequestMethod.POST)

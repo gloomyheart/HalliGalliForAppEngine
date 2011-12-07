@@ -80,7 +80,7 @@
 				cardWidth = width*70/W;
 				cardHeight = height*150/H;
 				// 보드판그리기 타이머시작
-				setInterval(drawBoard, 10);
+				//setInterval(drawBoard, 10);
 			});
 		</script>
 	</head>
