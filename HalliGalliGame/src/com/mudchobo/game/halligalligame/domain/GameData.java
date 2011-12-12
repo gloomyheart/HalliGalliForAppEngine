@@ -187,7 +187,12 @@ public class GameData
 			return;
 		}
 		// 합이 5가 맞는지 확인.
-		int totalCount = 0;
+		int totalCountB = 0;
+		int totalCountL = 0;
+		int totalCountP = 0;
+		int totalCountS = 0;
+		String type = "";
+		int count = 0;
 		for (int i = 0; i < openedCardList.size(); i++)
 		{
 			Stack<String> stack = openedCardList.get(i);
@@ -195,7 +200,17 @@ public class GameData
 			if (stack.size() != 0)
 			{
 				openedCard = stack.get(stack.size() - 1);
-				totalCount += Integer.parseInt(openedCard.substring(1));
+				type = openedCard.substring(0, 1);
+				count = Integer.parseInt(openedCard.substring(1));
+				if (type.equals("B")){
+					totalCountB += count; 
+				} else if (type.equals("L")){
+					totalCountL += count;
+				} else if (type.equals("P")){
+					totalCountP += count;
+				} else if (type.equals("S")){
+					totalCountS += count;
+				}
 			}
 		}
 		
@@ -211,7 +226,7 @@ public class GameData
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("result", "ringBell");
 		// 합이 5이면 성공. 오픈된 카드를 자신이 다 가진다.
-		if (totalCount == 5)
+		if (totalCountB == 5 || totalCountL == 5 || totalCountP == 5 || totalCountS == 5)
 		{
 			for (int i = 0; i < openedCardList.size(); i++)
 			{
